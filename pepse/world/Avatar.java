@@ -60,7 +60,12 @@ public class Avatar extends GameObject {
     }
 
     public void addEnergy(double energy) {
-        this.energy += energy;
+        if (energy < FULL_ENERGY) {
+            this.energy += energy;
+            if (this.energy > FULL_ENERGY) {
+                this.energy = FULL_ENERGY;
+            }
+        }
     }
 
     private float handleMove() {
@@ -98,34 +103,34 @@ public class Avatar extends GameObject {
 
     private void setIdleAnimation() {
         this.renderer().setRenderable(new AnimationRenderable(new String[]{
-                "../assets/idle/idle_0.png",
-                "../assets/idle/idle_1.png",
-                "../assets/idle/idle_2.png",
-                "../assets/idle/idle_3.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/idle/idle_0.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/idle/idle_1.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/idle/idle_2.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/idle/idle_3.png",
         }, imageReader, false, 0.1f));
     }
 
     private void setRunningAnimation() {
         this.renderer().setRenderable(new AnimationRenderable(new String[]{
-                "../assets/running/run_0.png",
-                "../assets/running/run_1.png",
-                "../assets/running/run_2.png",
-                "../assets/running/run_3.png",
-                "../assets/running/run_4.png",
-                "../assets/running/run_5.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_0.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_1.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_2.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_3.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_4.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/running/run_5.png",
         }, imageReader, false, 0.1f));
     }
 
     private void setJumpingAnimation() {
         this.renderer().setRenderable(new AnimationRenderable(new String[]{
-                "../assets/jumping/jump_0.png",
-                "../assets/jumping/jump_1.png",
-                "../assets/jumping/jump_2.png",
-                "../assets/jumping/jump_3.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/jumping/jump_0.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/jumping/jump_1.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/jumping/jump_2.png",
+                "/Users/ohadleshno/Downloads/Ex4 - Supplied Material-20240617/pepse/assets/jumping/jump_3.png",
         }, imageReader, false, 0.1f));
     }
 
-    enum AvatarState {
+    public enum AvatarState {
         RUNNING,
         IDLE,
         JUMPING

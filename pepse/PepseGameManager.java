@@ -12,6 +12,10 @@ import pepse.world.*;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
+import pepse.world.trees.Flora;
+import pepse.world.trees.Flower;
+import pepse.world.trees.Fruit;
+import pepse.world.trees.Tree;
 
 import java.util.List;
 
@@ -36,7 +40,7 @@ public class PepseGameManager extends GameManager {
         blocks.forEach(block -> {
             gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
         });
-        int cycleLength = 4;
+        int cycleLength = 30;
         GameObject sun = Sun.create(windowDimensions, cycleLength * 2);
         gameObjects().addGameObject(sun, skyLayer);
         gameObjects().addGameObject(Night.create(windowDimensions, cycleLength), Layer.BACKGROUND);
@@ -45,5 +49,15 @@ public class PepseGameManager extends GameManager {
         Energy energy = new Energy(avatar::getEnergy);
         gameObjects().addGameObject(energy, Layer.FOREGROUND);
         gameObjects().addGameObject(avatar, Layer.DEFAULT);
+        List<Tree> trees = new Flora(terrain::groundHeightAt, avatar::addEnergy).createInRange(0, (int) windowDimensions.x());
+        trees.forEach(tree -> {
+            gameObjects().addGameObject(tree, Layer.STATIC_OBJECTS);
+            for (Flower flower : tree.getFlowers()) {
+                gameObjects().addGameObject(flower, Layer.STATIC_OBJECTS);
+            }
+            for (Fruit fruit : tree.getFruits()) {
+                gameObjects().addGameObject(fruit, Layer.DEFAULT);
+            }
+        });
     }
 }

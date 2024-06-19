@@ -2,6 +2,7 @@ package pepse.world;
 
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
+import pepse.util.BlockUtil;
 import pepse.util.ColorSupplier;
 import pepse.util.NoiseGenerator;
 
@@ -27,8 +28,8 @@ public class Terrain {
 
     public List<Block> createInRange(int minX, int maxX) {
         RectangleRenderable rectangleRenderable = new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
-        int finalMinX = getNearestBlockLocation(minX);
-        int finalMaxX = getNearestBlockLocation(maxX);
+        int finalMinX = BlockUtil.getNearestBlockLocation(minX);
+        int finalMaxX = BlockUtil.getNearestBlockLocation(maxX);
         int currentX = finalMinX;
         List<Block> blocks = new LinkedList<>();
 
@@ -47,16 +48,6 @@ public class Terrain {
             block.setTag("ground");
             blocks.add(block);
             y += Block.SIZE;
-        }
-    }
-
-    //todo clean
-    // We are doing the tip of 2.2.5 to finding the closet location of the block by the block size
-    private int getNearestBlockLocation(int x) {
-        if (x < 0) {
-            return x - (Block.SIZE - x % Block.SIZE);
-        } else {
-            return x - x % Block.SIZE;
         }
     }
 }
