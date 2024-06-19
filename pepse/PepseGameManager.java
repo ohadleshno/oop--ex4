@@ -2,6 +2,7 @@ package pepse;
 
 import danogl.GameManager;
 import danogl.GameObject;
+import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
@@ -33,30 +34,31 @@ public class PepseGameManager extends GameManager {
     public void initializeGame(ImageReader imageReader, SoundReader soundReader, UserInputListener inputListener, WindowController windowController) {
         super.initializeGame(imageReader, soundReader, inputListener, windowController);
         Vector2 windowDimensions = windowController.getWindowDimensions();
-        gameObjects().addGameObject(Sky.create(windowDimensions), skyLayer);
+        GameObjectCollection gameObjects = gameObjects();
+        gameObjects.addGameObject(Sky.create(windowDimensions), skyLayer);
         Terrain terrain = new Terrain(windowDimensions, 0);
         float groundHeightAt0 = terrain.groundHeightAt(0f);
         List<Block> blocks = terrain.createInRange(0, (int) windowDimensions.x());
         blocks.forEach(block -> {
-            gameObjects().addGameObject(block, Layer.STATIC_OBJECTS);
+            gameObjects.addGameObject(block, Layer.STATIC_OBJECTS);
         });
         int cycleLength = 30;
-        GameObject sun = Sun.create(windowDimensions, cycleLength * 2);
-        gameObjects().addGameObject(sun, skyLayer);
-        gameObjects().addGameObject(Night.create(windowDimensions, cycleLength), Layer.BACKGROUND);
-        gameObjects().addGameObject(SunHalo.create(sun), Layer.BACKGROUND);
+        GameObject sun = Sun.create(windowDimensions, cycleLength);
+        gameObjects.addGameObject(sun, skyLayer);
+        gameObjects.addGameObject(Night.create(windowDimensions, (float) cycleLength / 2), Layer.BACKGROUND);
+        gameObjects.addGameObject(SunHalo.create(sun), Layer.BACKGROUND);
         Avatar avatar = new Avatar(Vector2.of(0, groundHeightAt0 - AVATAR_HEIGHT * 2), inputListener, imageReader);
         Energy energy = new Energy(avatar::getEnergy);
-        gameObjects().addGameObject(energy, Layer.FOREGROUND);
-        gameObjects().addGameObject(avatar, Layer.DEFAULT);
-        List<Tree> trees = new Flora(terrain::groundHeightAt, avatar::addEnergy).createInRange(0, (int) windowDimensions.x());
+        gameObjects.addGameObject(energy, Layer.FOREGROUND);
+        gameObjects.addGameObject(avatar, Layer.DEFAULT);
+        List<Tree> trees = new Flora(terrain::groundHeightAt, avatar::addEnergy, gameObjects, cycleLength).createInRange(0, (int) windowDimensions.x());
         trees.forEach(tree -> {
-            gameObjects().addGameObject(tree, Layer.STATIC_OBJECTS);
+            gameObjects.addGameObject(tree, Layer.STATIC_OBJECTS);
             for (Flower flower : tree.getFlowers()) {
-                gameObjects().addGameObject(flower, Layer.STATIC_OBJECTS);
+                gameObjects.addGameObject(flower, Layer.STATIC_OBJECTS);
             }
             for (Fruit fruit : tree.getFruits()) {
-                gameObjects().addGameObject(fruit, Layer.DEFAULT);
+                gameObjects.addGameObject(fruit, Layer.DEFAULT);
             }
         });
     }

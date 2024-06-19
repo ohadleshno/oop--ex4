@@ -1,7 +1,10 @@
 package pepse.world.trees;
 
 import danogl.GameObject;
+import danogl.collisions.GameObjectCollection;
+import danogl.collisions.Layer;
 import danogl.components.GameObjectPhysics;
+import danogl.components.ScheduledTask;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.world.Block;
@@ -19,13 +22,18 @@ public class Tree extends GameObject {
     private List<Flower> flowers;
     private List<Fruit> fruits;
     private Consumer<Float> addEnergy;
+    private GameObjectCollection gameObjects;
+    private int cycleLength;
 
-    public Tree(Vector2 groundHeight, Consumer<Float> addEnergy) {
+    public Tree(Vector2 groundHeight, Consumer<Float> addEnergy, GameObjectCollection gameObjects, int cycleLength) {
         super(groundHeight.subtract(Vector2.DOWN.mult(TREE_HEIGHT)), Tree_Block_Size, new RectangleRenderable(TREE_BLOCK_COLOR));
         physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
         this.addEnergy = addEnergy;
+        this.gameObjects = gameObjects;
+        this.cycleLength = cycleLength;
         this.flowers = this.addFlowerAroundTreeTopInCircle(this.getTopLeftCorner());
         this.fruits = this.addFruitsAroundTreeTopInCircle(this.getTopLeftCorner());
+        new ScheduledTask(this, this.cycleLength,true, this::regenrateEatenFruits);
     }
 
     public List<Flower> getFlowers() {
@@ -34,6 +42,15 @@ public class Tree extends GameObject {
 
     public List<Fruit> getFruits() {
         return this.fruits;
+    }
+
+    private void regenrateEatenFruits() {
+        for (Fruit fruit : this.fruits) {
+            if (fruit.isEaten()) {
+                fruit.setEaten(false);
+                gameObjects.addGameObject(fruit, Layer.DEFAULT);
+            }
+        }
     }
 
     private List<Flower> addFlowerAroundTreeTopInCircle(Vector2 treeCenter) {
@@ -51,7 +68,7 @@ public class Tree extends GameObject {
         int numFlowers = new Random().nextInt(0, 10);
         for (int i = 0; i < numFlowers; i++) {
             Vector2 fruitTopLeft = treeCenter.add(Vector2.ONES.mult(Block.SIZE).multX(new Random().nextInt(-5, 5)).multY(new Random().nextInt(-5, 5)));
-            fruits.add(new Fruit(fruitTopLeft, addEnergy));
+            fruits.add(new Fruit(fruitTopLeft, addEnergy, gameObjects));
         }
         return fruits;
     }
