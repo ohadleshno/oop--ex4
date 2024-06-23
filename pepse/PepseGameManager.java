@@ -8,16 +8,15 @@ import danogl.gui.ImageReader;
 import danogl.gui.SoundReader;
 import danogl.gui.UserInputListener;
 import danogl.gui.WindowController;
+import danogl.gui.rendering.Camera;
 import danogl.util.Vector2;
 import pepse.world.*;
 import pepse.world.daynight.Night;
 import pepse.world.daynight.Sun;
 import pepse.world.daynight.SunHalo;
-import pepse.world.trees.Flora;
-import pepse.world.trees.Flower;
-import pepse.world.trees.Fruit;
-import pepse.world.trees.Tree;
+import pepse.world.trees.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static pepse.world.Avatar.AVATAR_HEIGHT;
@@ -52,7 +51,9 @@ public class PepseGameManager extends GameManager {
         gameObjects.addGameObject(energy, Layer.FOREGROUND);
         gameObjects.addGameObject(avatar, Layer.DEFAULT);
         List<Tree> trees = new Flora(terrain::groundHeightAt, avatar::addEnergy, gameObjects, cycleLength).createInRange(0, (int) windowDimensions.x());
+        List<FloraGameObject> floraGameObjects = new LinkedList<>();
         trees.forEach(tree -> {
+            floraGameObjects.addAll(tree.getAllTreeElements());
             gameObjects.addGameObject(tree, Layer.STATIC_OBJECTS);
             for (Flower flower : tree.getFlowers()) {
                 gameObjects.addGameObject(flower, Layer.STATIC_OBJECTS);
@@ -61,5 +62,6 @@ public class PepseGameManager extends GameManager {
                 gameObjects.addGameObject(fruit, Layer.DEFAULT);
             }
         });
+        avatar.setOnJump(floraGameObjects.stream().map(FloraGameObject::onJump).toList());
     }
 }

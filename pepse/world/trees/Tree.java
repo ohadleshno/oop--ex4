@@ -1,10 +1,10 @@
 package pepse.world.trees;
 
-import danogl.GameObject;
 import danogl.collisions.GameObjectCollection;
 import danogl.collisions.Layer;
 import danogl.components.GameObjectPhysics;
 import danogl.components.ScheduledTask;
+import danogl.components.Transition;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.world.Block;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class Tree extends GameObject {
+public class Tree extends FloraGameObject {
     public static final int TREE_HEIGHT = Block.SIZE * 10;
     public static final Color TREE_BLOCK_COLOR = new Color(100, 50, 20);
     public static final Vector2 Tree_Block_Size = Vector2.ONES.multY(TREE_HEIGHT).multX(Block.SIZE);
@@ -33,7 +33,7 @@ public class Tree extends GameObject {
         this.cycleLength = cycleLength;
         this.flowers = this.addFlowerAroundTreeTopInCircle(this.getTopLeftCorner());
         this.fruits = this.addFruitsAroundTreeTopInCircle(this.getTopLeftCorner());
-        new ScheduledTask(this, this.cycleLength,true, this::regenrateEatenFruits);
+        new ScheduledTask(this, this.cycleLength, true, this::regenrateEatenFruits);
     }
 
     public List<Flower> getFlowers() {
@@ -73,4 +73,18 @@ public class Tree extends GameObject {
         return fruits;
     }
 
+    public List<FloraGameObject> getAllTreeElements() {
+        List<FloraGameObject> floraGameObjects = new LinkedList<>();
+        floraGameObjects.addAll(flowers);
+        floraGameObjects.addAll(fruits);
+        floraGameObjects.add(this);
+        return floraGameObjects;
+    }
+
+    @Override
+    public Runnable onJump() {
+        return () -> {
+            new Transition<Float>(this, this.renderer()::setOpaqueness, 1f, new Random().nextFloat(0.6f, 1f), Transition.CUBIC_INTERPOLATOR_FLOAT,2, Transition.TransitionType.TRANSITION_ONCE, null);
+        };
+    }
 }

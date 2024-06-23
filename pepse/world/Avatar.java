@@ -9,6 +9,8 @@ import danogl.util.Vector2;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Avatar extends GameObject {
     private static final float VELOCITY_X = 400;
@@ -20,6 +22,7 @@ public class Avatar extends GameObject {
     private static final double STEP_ENERGY = 0.5;
     private static final double JUMP_ENERGY = 10;
     private AvatarState avatarState = AvatarState.IDLE;
+    private List<Runnable> onJump = new LinkedList<>();
 
     private double energy = FULL_ENERGY;
 
@@ -33,6 +36,14 @@ public class Avatar extends GameObject {
         transform().setAccelerationY(GRAVITY);
         this.inputListener = inputListener;
         this.imageReader = imageReader;
+    }
+
+    public double getEnergy() {
+        return energy;
+    }
+
+    public void setOnJump(List<Runnable> onJump) {
+        this.onJump = onJump;
     }
 
     @Override
@@ -82,6 +93,7 @@ public class Avatar extends GameObject {
         if (energy < JUMP_ENERGY) return;
         this.avatarState = AvatarState.JUMPING;
         setJumpingAnimation();
+        onJump.forEach(Runnable::run);
         energy -= JUMP_ENERGY;
         transform().setVelocityY(VELOCITY_Y);
     }
@@ -95,10 +107,6 @@ public class Avatar extends GameObject {
                 energy = FULL_ENERGY;
             }
         }
-    }
-
-    public double getEnergy() {
-        return energy;
     }
 
     private void setIdleAnimation() {

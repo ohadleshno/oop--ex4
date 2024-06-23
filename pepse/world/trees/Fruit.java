@@ -5,17 +5,17 @@ import danogl.collisions.Collision;
 import danogl.collisions.GameObjectCollection;
 import danogl.components.GameObjectPhysics;
 import danogl.gui.rendering.OvalRenderable;
-import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.world.Avatar;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import static pepse.world.trees.Flower.FLOWER_HEIGHT;
 import static pepse.world.trees.Flower.FLOWER_WIDTH;
 
-public class Fruit extends GameObject {
+public class Fruit extends FloraGameObject {
     public static final int FRUIT_WIDTH = FLOWER_WIDTH / 4 * 3;
     public static final int FRUIT_HEIGHT = FLOWER_HEIGHT / 4 * 3;
     public static final Color FRUIT_COLOR = new Color(107, 19, 189);
@@ -47,5 +47,13 @@ public class Fruit extends GameObject {
             this.isEaten = true;
             this.gameObjects.removeGameObject(this);
         }
+    }
+
+    @Override
+    public Runnable onJump() {
+        Random random = new Random();
+        return () -> {
+            this.renderer().setRenderable(new OvalRenderable(new Color(random.nextInt(0, 256), random.nextInt(0, 256), random.nextInt(0, 256))));
+        };
     }
 }
