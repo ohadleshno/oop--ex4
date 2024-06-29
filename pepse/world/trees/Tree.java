@@ -33,6 +33,8 @@ public class Tree extends FloraGameObject {
         this.cycleLength = cycleLength;
         this.flowers = this.addFlowerAroundTreeTopInCircle(this.getTopLeftCorner());
         this.fruits = this.addFruitsAroundTreeTopInCircle(this.getTopLeftCorner());
+        physics().preventIntersectionsFromDirection(Vector2.ZERO);
+        physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
         new ScheduledTask(this, this.cycleLength, true, this::regenrateEatenFruits);
     }
 
@@ -84,7 +86,7 @@ public class Tree extends FloraGameObject {
     @Override
     public Runnable onJump() {
         return () -> {
-            new Transition<Float>(this, this.renderer()::setOpaqueness, 1f, new Random().nextFloat(0.6f, 1f), Transition.CUBIC_INTERPOLATOR_FLOAT,2, Transition.TransitionType.TRANSITION_ONCE, null);
+            new Transition<Float>(this, this.renderer()::setOpaqueness, 1f, new Random().nextFloat(0.6f, 1f), Transition.CUBIC_INTERPOLATOR_FLOAT, 2, Transition.TransitionType.TRANSITION_ONCE, null);
         };
     }
 }

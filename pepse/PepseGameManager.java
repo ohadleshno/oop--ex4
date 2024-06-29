@@ -54,7 +54,7 @@ public class PepseGameManager extends GameManager {
         List<FloraGameObject> floraGameObjects = new LinkedList<>();
         trees.forEach(tree -> {
             floraGameObjects.addAll(tree.getAllTreeElements());
-            gameObjects.addGameObject(tree, Layer.STATIC_OBJECTS);
+            gameObjects.addGameObject(tree, Layer.DEFAULT);
             for (Flower flower : tree.getFlowers()) {
                 gameObjects.addGameObject(flower, Layer.STATIC_OBJECTS);
             }

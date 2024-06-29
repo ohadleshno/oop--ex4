@@ -27,7 +27,6 @@ public class Terrain {
     }
 
     public List<Block> createInRange(int minX, int maxX) {
-        RectangleRenderable rectangleRenderable = new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR));
         int finalMinX = BlockUtil.getNearestBlockLocation(minX);
         int finalMaxX = BlockUtil.getNearestBlockLocation(maxX);
         int currentX = finalMinX;
@@ -35,16 +34,16 @@ public class Terrain {
 
         while (currentX < finalMaxX) {
             float y = (float) (Math.floor(groundHeightAt(currentX) / Block.SIZE) * Block.SIZE);
-            addBlocksAtX(currentX, y, rectangleRenderable, blocks);
+            addBlocksAtX(currentX, y, blocks);
             currentX += Block.SIZE;
         }
 
         return blocks;
     }
 
-    private static void addBlocksAtX(int currentX, float y, RectangleRenderable rectangleRenderable, List<Block> blocks) {
+    private static void addBlocksAtX(int currentX, float y, List<Block> blocks) {
         for (int i = 0; i < TERRAIN_DEPTH; i++) {
-            Block block = new Block(Vector2.of(currentX, y), rectangleRenderable);
+            Block block = new Block(Vector2.of(currentX, y), new RectangleRenderable(ColorSupplier.approximateColor(BASE_GROUND_COLOR)));
             block.setTag("ground");
             blocks.add(block);
             y += Block.SIZE;
