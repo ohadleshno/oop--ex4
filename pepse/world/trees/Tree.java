@@ -5,6 +5,7 @@ import danogl.collisions.Layer;
 import danogl.components.GameObjectPhysics;
 import danogl.components.ScheduledTask;
 import danogl.components.Transition;
+import danogl.gui.rendering.OvalRenderable;
 import danogl.gui.rendering.RectangleRenderable;
 import danogl.util.Vector2;
 import pepse.world.Block;
@@ -14,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+
+import static pepse.util.ColorSupplier.approximateColor;
 
 public class Tree extends FloraGameObject {
     public static final int TREE_HEIGHT = Block.SIZE * 10;
@@ -86,7 +89,7 @@ public class Tree extends FloraGameObject {
     @Override
     public Runnable onJump() {
         return () -> {
-            new Transition<Float>(this, this.renderer()::setOpaqueness, 1f, new Random().nextFloat(0.6f, 1f), Transition.CUBIC_INTERPOLATOR_FLOAT, 2, Transition.TransitionType.TRANSITION_ONCE, null);
+            this.renderer().setRenderable(new RectangleRenderable((approximateColor(TREE_BLOCK_COLOR, 50))));
         };
     }
 }
