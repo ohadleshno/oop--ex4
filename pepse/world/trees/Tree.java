@@ -19,9 +19,8 @@ import java.util.function.Consumer;
 import static pepse.util.ColorSupplier.approximateColor;
 
 public class Tree extends FloraGameObject {
-    public static final int TREE_HEIGHT = Block.SIZE * 10;
+    public static final int TREE_HEIGHT_BASE = Block.SIZE * 10;
     public static final Color TREE_BLOCK_COLOR = new Color(100, 50, 20);
-    public static final Vector2 Tree_Block_Size = Vector2.ONES.multY(TREE_HEIGHT).multX(Block.SIZE);
     private List<Flower> flowers;
     private List<Fruit> fruits;
     private Consumer<Float> addEnergy;
@@ -29,7 +28,11 @@ public class Tree extends FloraGameObject {
     private int cycleLength;
 
     public Tree(Vector2 groundHeight, Consumer<Float> addEnergy, GameObjectCollection gameObjects, int cycleLength) {
-        super(groundHeight.subtract(Vector2.DOWN.mult(TREE_HEIGHT)), Tree_Block_Size, new RectangleRenderable(TREE_BLOCK_COLOR));
+        Random random = new Random();
+        float treeHeight = TREE_HEIGHT_BASE * random.nextFloat(0.6f, 1.2f);
+        float treeWidth = Block.SIZE * random.nextFloat(1f, 1.8f);
+        Vector2 treeBlockSize = Vector2.ONES.multY(treeHeight).multX(treeWidth);
+        super(groundHeight.subtract(Vector2.DOWN.mult(treeHeight)), treeBlockSize, new RectangleRenderable(approximateColor(TREE_BLOCK_COLOR, 50)));
         physics().setMass(GameObjectPhysics.IMMOVABLE_MASS);
         this.addEnergy = addEnergy;
         this.gameObjects = gameObjects;
